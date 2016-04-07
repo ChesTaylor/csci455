@@ -5,3 +5,14 @@ You must run these files on a computer with both rethinkdb & bigchaindb installe
 3. checkvote.py checks if each users "vote" has been written to the db
 4. dummytransfer.py transfers each users "vote" to the "govt" user
 5. checkinventory.py checks all of the transactions owned by the "govt" user
+
+Client-Server API:
+  Global commands:
+    - login
+  Voter commands:
+    - vote
+    - check_vote
+  Administrator commands:
+    - assign_votes
+    - ??
+    - profit
