@@ -7,15 +7,14 @@ You must run these files on a computer with both rethinkdb & bigchaindb installe
 5. checkinventory.py checks all of the transactions owned by the "govt" user
 
 Client-Server API:
+Global commands:
+* login
 
-  Global commands:
-    - login
+Voter commands:
+* vote
+* check_vote
 
-  Voter commands:
-    - vote
-    - check_vote
-
-  Administrator commands:
-    - assign_votes
-    - ??
-    - profit
+Administrator commands:
+* assign_votes
+* ??
+* profit
