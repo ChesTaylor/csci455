@@ -6,28 +6,13 @@ You must run these files on a computer with both rethinkdb & bigchaindb installe
 4. dummytransfer.py transfers each users "vote" to the "govt" user
 5. checkinventory.py checks all of the transactions owned by the "govt" user
 
-**Client->Server API:**
+**Operations:**
 
-Global commands:
-* login_request (creds::Credential)
+Admin:
+* Create election
+* Assign votes during election
 
-Voter commands:
-* vote_request (ARGS GO HERE)
-* check_vote_request (ARGS GO HERE)
-
-Administrator commands:
-* assign_votes (ARGS GO HERE)
-* ??
-* profit
-
-**Server->Client API:**
-
-Global commands:
-* login_response (ARGS GO HERE)
-
-Voter commands:
-* vote_response (ARGS)
-* check_vote_response (ARGS)
-
-Administrator commands:
-* i don't even know
+Voter:
+* Vote
+* Check vote
+* Check election status?
