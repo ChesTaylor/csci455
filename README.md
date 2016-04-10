@@ -9,6 +9,7 @@ You must run these files on a computer with both rethinkdb & bigchaindb installe
 **Operations:**
 
 Admin:
+* Enroll voter
 * Create election
 * Assign votes during election
 
