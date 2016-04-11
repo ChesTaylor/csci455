@@ -1,0 +1,39 @@
+{% load staticfiles %}
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Vote</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+	<link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap-theme.min.css">
+    
+	<link rel="stylesheet" href="{% static 'css/custom.css' %}">
+	
+</head>
+<body class="home-body">
+
+
+<div class="modal" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true"  style="display: inline;">
+    	  <div class="modal-dialog">
+				<div class="loginmodal-container">
+					<h1>Login to Your Account</h1><br>
+				  <form id="login_form" method="post" action="/elections/login/">
+				    {% csrf_token %}
+					<input type="text" name="username" placeholder="Username">
+					<input type="password" name="password" placeholder="Password">
+					<input type="submit" name="login" class="login loginmodal-submit" value="submit" />
+				  </form>
+					
+				  <div class="login-help">
+					<a href="/elections/register/">Register</a>
+				  </div>
+				</div>
+			</div>
+		  </div>
+</body>
+</html>
