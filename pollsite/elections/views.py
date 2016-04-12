@@ -3,11 +3,14 @@ from django.http import HttpResponse
 from django.template import loader
 from django.template import Context, Template, RequestContext
 from .models import Candidate
-from django.contrib.auth import authenticate, login
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 
 from .forms import UserForm, UserProfileForm
 
+def user_logout(request):
+	logout(request)
+	return HttpResponseRedirect('/elections/login')
 
 def user_login(request):
 	# Like before, obtain the context for the user's request.
@@ -50,20 +53,15 @@ def register(request):
 		user_form = UserForm(data=request.POST)
 		profile_form = UserProfileForm(data=request.POST)
 
-		if user_form.is_valid() and profile_form.is_valid():
+		if user_form.is_valid():
 			user = user_form.save()
 
 			user.set_password(user.password)
 			user.save()
 
-			profile = profile_form.save(commit=False)
-			profile.user = user
-
-			# Now we save the UserProfile model instance.
-			profile.save()
-
 			# Update our variable to tell the template registration was successful.
 			registered = True
+			return HttpResponseRedirect('/elections/login')
 		else:
 			print(user_form.errors, profile_form.errors)
 	else:
@@ -74,21 +72,33 @@ def register(request):
 	return render_to_response('elections/register.html',{'user_form': user_form, 'profile_form': profile_form, 'registered': registered}, context)
 			
 def index(request):
+	user = request.user
 	candidates = Candidate.objects.all()
 	halfsize = (candidates.count() // 2) + 1
 	template = loader.get_template('elections/index.html')
 	context = {
 		'candidates': candidates,
 		'halfsize': halfsize,
+		'user': user,
 	}
 	return HttpResponse(template.render(context, request))
 
 def detail(request, candidate_id):
-	return HttpResponse("You're looking at candidate %s." % candidate_id)
+	template = loader.get_template('elections/elect.html')
+	return HttpResponse(template.render(request))
+#	return HttpResponse("You're looking at question %s." % candidate_id)
+
+#def detail(request, candidate_id):
+#	candidate = Candidate.objects.get(candidate_id)
+#	template = loader.get_template('elections/elect.html')
+#	context = {
+#		'candidate': candidate,
+#	}
+#	return HttpResponse(template.render(context, request))
 
 def results(request, candidate_id):
 	response = "You're looking at the results of question %s."
-	return HttpResponse(response % candidate_id)
+	return HttpResponse(response % question_id)
 
 def vote(request, candidate_id):
 	return HttpResponse("You're voting on question %s." % candidate_id)
