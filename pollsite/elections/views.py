@@ -1,10 +1,11 @@
-from django.shortcuts import render, render_to_response
+from django.shortcuts import render, render_to_response, get_object_or_404
 from django.http import HttpResponse
 from django.template import loader
 from django.template import Context, Template, RequestContext
 from .models import Candidate
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
+from django.core.urlresolvers import reverse
 
 from .forms import UserForm, UserProfileForm
 
@@ -84,21 +85,27 @@ def index(request):
 	return HttpResponse(template.render(context, request))
 
 def detail(request, candidate_id):
-	template = loader.get_template('elections/elect.html')
-	return HttpResponse(template.render(request))
-#	return HttpResponse("You're looking at question %s." % candidate_id)
-
-#def detail(request, candidate_id):
-#	candidate = Candidate.objects.get(candidate_id)
-#	template = loader.get_template('elections/elect.html')
-#	context = {
-#		'candidate': candidate,
-#	}
-#	return HttpResponse(template.render(context, request))
+    candidate = get_object_or_404(Candidate, pk=candidate_id)
+    return render(request, 'elections/detail.html', {'candidate': candidate})
 
 def results(request, candidate_id):
-	response = "You're looking at the results of question %s."
-	return HttpResponse(response % question_id)
+    candidate = get_object_or_404(Candidate, pk=candidate_id)
+    return render(request, 'elections/results.html', {'candidate': candidate})
 
 def vote(request, candidate_id):
-	return HttpResponse("You're voting on question %s." % candidate_id)
+    candidate = get_object_or_404(Candidate, pk=candidate_id)
+    try:
+        selected_choice = candidate.choice_set.get(pk=request.POST['choice'])
+    except (KeyError, Choice.DoesNotExist):
+        # Redisplay the question voting form.
+        return render(request, 'elections/detail.html', {
+            'candidate': candidate,
+            'error_message': "You didn't select a choice.",
+        })
+    else:
+        selected_choice.votes += 1
+        selected_choice.save()
+        # Always return an HttpResponseRedirect after successfully dealing
+        # with POST data. This prevents data from being posted twice if a
+        # user hits the Back button.
+        return HttpResponseRedirect('/elections/' + candidate_id + '/results/')
