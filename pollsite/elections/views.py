@@ -9,6 +9,10 @@ from django.core.urlresolvers import reverse
 
 from .forms import UserForm, UserProfileForm
 
+from bigchaindb import Bigchain
+import hashlib
+b = Bigchain() # shhh don't tell about the global object and they won't notice
+
 def user_logout(request):
 	logout(request)
 	return HttpResponseRedirect('/elections/login')
@@ -58,6 +62,9 @@ def register(request):
 			user = user_form.save()
 
 			user.set_password(user.password)
+			prvkey, pubkey = b.generate_keys()
+			user.set_prvkey(prvkey)
+			user.setpubkey(pubkey)
 			user.save()
 
 			# Update our variable to tell the template registration was successful.
@@ -70,6 +77,7 @@ def register(request):
 		profile_form = UserProfileForm()
 
     # Render the template depending on the context.
+	return HttpResponseRedirect(user.pubkey)
 	return render_to_response('elections/register.html',{'user_form': user_form, 'profile_form': profile_form, 'registered': registered}, context)
 			
 def index(request):
@@ -90,6 +98,9 @@ def detail(request, candidate_id):
 
 def results(request, candidate_id):
     candidate = get_object_or_404(Candidate, pk=candidate_id)
+    payload = {'choice': candidate_id}
+    payload_hash = hashlib.sha3_256(payload).hexdigest()
+    txs = b.get_tx_by_payload_hash(payload_hash) # TODO: display these
     return render(request, 'elections/results.html', {'candidate': candidate})
 
 def vote(request, candidate_id):
@@ -105,6 +116,12 @@ def vote(request, candidate_id):
     else:
         selected_choice.votes += 1
         selected_choice.save()
+        digital_asset_payload = {'choice': candidate_id}
+        prv, pub = request.user.privkey, request.user.pubkey
+        tx = b.create_transaction(b.me, pub, None, 'CREATE', payload=digital_asset_payload)
+        tx_signed = b.sign_transaction(tx, b.me_private)
+        b.write_transaction(tx_signed)
+
         # Always return an HttpResponseRedirect after successfully dealing
         # with POST data. This prevents data from being posted twice if a
         # user hits the Back button.
