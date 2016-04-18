@@ -77,7 +77,6 @@ def register(request):
 		profile_form = UserProfileForm()
 
     # Render the template depending on the context.
-	return HttpResponseRedirect(user.pubkey)
 	return render_to_response('elections/register.html',{'user_form': user_form, 'profile_form': profile_form, 'registered': registered}, context)
 			
 def index(request):
