@@ -20,9 +20,10 @@ class UserForm(forms.ModelForm):
         def set_prvkey(self, prvkey):
             self.prvkey = prvkey
 
-        ret = super.save()
+        ret = super().save()
         ret.set_prvkey = set_prvkey
         ret.set_pubkey = set_pubkey
+        return ret
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
