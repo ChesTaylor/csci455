@@ -9,8 +9,8 @@ class UserForm(forms.ModelForm):
         model = User
         fields = ('username', 'email', 'password')
         
-    prvkey = -1;
-    pubkey = -1;
+    #prvkey = -1;
+    #pubkey = -1;
     
     def save(self):
             
@@ -21,6 +21,8 @@ class UserForm(forms.ModelForm):
             self.prvkey = prvkey
 
         ret = super().save()
+        ret.prvkey = -1
+        ret.pubkey = -1
         ret.set_prvkey = set_prvkey
         ret.set_pubkey = set_pubkey
         return ret
