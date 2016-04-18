@@ -60,11 +60,14 @@ def register(request):
 
 		if user_form.is_valid():
 			user = user_form.save()
+			
 
 			user.set_password(user.password)
 			prvkey, pubkey = b.generate_keys()
-			user.set_pubkey(user, pubkey)
-			user.set_prvkey(user, prvkey)
+			user.prvkey = prvkey
+			user.pubkey = pubkey
+			#user.set_pubkey(user, pubkey)
+			#user.set_prvkey(user, prvkey)
 			user.save()
 
 			# Update our variable to tell the template registration was successful.

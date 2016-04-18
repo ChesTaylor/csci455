@@ -8,9 +8,6 @@ class UserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('username', 'email', 'password')
-        
-    #prvkey = -1;
-    #pubkey = -1;
     
     def save(self):
             
@@ -25,8 +22,12 @@ class UserForm(forms.ModelForm):
         ret.pubkey = -1
         ret.set_prvkey = set_prvkey
         ret.set_pubkey = set_pubkey
-        self.prvkey = 'foo'
         return ret
+    
+class MyUser(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    prvkey = models.CharField()
+    pubkey = models.CharField()
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
