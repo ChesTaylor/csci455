@@ -23,11 +23,6 @@ class UserForm(forms.ModelForm):
         ret.set_prvkey = set_prvkey
         ret.set_pubkey = set_pubkey
         return ret
-    
-class MyUser(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    prvkey = models.CharField()
-    pubkey = models.CharField()
 
 class UserProfileForm(forms.ModelForm):
     class Meta:
