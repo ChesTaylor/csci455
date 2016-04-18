@@ -64,7 +64,7 @@ def register(request):
 			user.set_password(user.password)
 			prvkey, pubkey = b.generate_keys()
 			user.set_prvkey(prvkey)
-			user.setpubkey(pubkey)
+			user.set_pubkey(pubkey)
 			user.save()
 
 			# Update our variable to tell the template registration was successful.
@@ -116,7 +116,7 @@ def vote(request, candidate_id):
         selected_choice.votes += 1
         selected_choice.save()
         digital_asset_payload = {'choice': candidate_id}
-        prv, pub = request.user.privkey, request.user.pubkey
+        prv, pub = request.user.prvkey, request.user.pubkey
         tx = b.create_transaction(b.me, pub, None, 'CREATE', payload=digital_asset_payload)
         tx_signed = b.sign_transaction(tx, b.me_private)
         b.write_transaction(tx_signed)

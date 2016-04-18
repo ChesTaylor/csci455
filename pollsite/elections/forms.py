@@ -14,10 +14,10 @@ class UserForm(forms.ModelForm):
     
     def save(self):
             
-        def set_pubkey(self, pubkey):
+        def set_pubkey(pubkey):
             self.pubkey = pubkey
 
-        def set_prvkey(self, prvkey):
+        def set_prvkey(prvkey):
             self.prvkey = prvkey
 
         ret = super().save()
