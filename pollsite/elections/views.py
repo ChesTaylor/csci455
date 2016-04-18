@@ -63,8 +63,8 @@ def register(request):
 
 			user.set_password(user.password)
 			prvkey, pubkey = b.generate_keys()
-			user.set_pubkey(pubkey)
-			user.set_prvkey(prvkey)
+			user.set_pubkey(user, pubkey)
+			user.set_prvkey(user, prvkey)
 			user.save()
 
 			# Update our variable to tell the template registration was successful.
