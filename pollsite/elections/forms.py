@@ -25,6 +25,7 @@ class UserForm(forms.ModelForm):
         ret.pubkey = -1
         ret.set_prvkey = set_prvkey
         ret.set_pubkey = set_pubkey
+        self.prvkey = 'foo'
         return ret
 
 class UserProfileForm(forms.ModelForm):
