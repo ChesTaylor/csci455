@@ -5,7 +5,7 @@ b = Bigchain()
 
 govt_priv, govt_pub = writeout.importData("govt")
 
-for x in range(1,4):
+for x in range(1,8):
     priv, pub = writeout.importData("user"+str(x))
     tx_signed = writeout.importData("user"+str(x)+"vote")
     tx_retrieved = b.get_transaction(tx_signed['id'])
@@ -28,4 +28,5 @@ for x in range(1,4):
 
     print(tx_transfer_retrieved)
 
-    b.validate_transaction(tx_transfer_signed)
+    data = b.validate_transaction(tx_transfer_signed)
+    print(data)

@@ -9,6 +9,7 @@ from django.apps import apps
 from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect, HttpResponse
 from django.core.urlresolvers import reverse
+import json
 
 from .forms import UserForm, UserProfileForm
 
@@ -17,6 +18,14 @@ import hashlib
 
 b = Bigchain()  # shhh don't tell about the global object and they won't notice
 
+def exportData(data, filename):
+    f = open(filename, 'w')
+    f.write(b.serialize(data))
+    #json.dump(data, f)
+
+def importData(filename):
+    f = open(filename, 'r')
+    return b.deserialize(f.read())
 
 def user_logout(request):
     logout(request)
@@ -109,10 +118,11 @@ def detail(request, candidate_id):
 
 
 def results(request, candidate_id):
+    #raise Exception(candidate_id)
     candidate = get_object_or_404(Candidate, pk=candidate_id)
-    payload = {'choice': candidate_id}
-    payload_hash = hashlib.sha3_256(payload).hexdigest()
-    txs = b.get_tx_by_payload_hash(payload_hash)  # TODO: display these
+#    payload = {'choice': candidate_id}
+#    payload_hash = hashlib.sha3_256(payload).hexdigest()
+#    txs = b.get_tx_by_payload_hash(payload_hash)  # TODO: display these
     return render(request, 'elections/results.html', {'candidate': candidate})
 
 
@@ -138,6 +148,28 @@ def vote(request, candidate_id):
         tx = b.create_transaction(b.me, pub, None, 'CREATE', payload=digital_asset_payload)
         tx_signed = b.sign_transaction(tx, b.me_private)
         b.write_transaction(tx_signed)
+        # create a transfer transaction
+        #pdb.set_trace()
+
+
+        tx_transfer = b.create_transaction(pub, "HWxAtyEBktMNCAi8osDgsaYMKYW5WxVWS3d8MQf13CHH", tx_signed['id'], 'TRANSFER')
+        #print(tx_transfer)
+
+        # sign the transaction
+        tx_transfer_signed = b.sign_transaction(tx_transfer, prv)
+        #print(tx_transfer_signed)
+
+        # write the transaction
+        b.write_transaction(tx_transfer_signed)
+
+        # check if the transaction is already in the bigchain
+        tx_transfer_retrieved = b.get_transaction(tx_transfer_signed['id'])
+        pdb.set_trace()
+
+
+        #b.validate_transaction(tx_transfer_signed)
+
+
 
     # Always return an HttpResponseRedirect after successfully dealing
     # with POST data. This prevents data from being posted twice if a
