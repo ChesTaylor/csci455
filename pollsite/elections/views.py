@@ -176,12 +176,12 @@ def vote(request, candidate_id):
         try:
             b.validate_transaction(tx_transfer_signed)
             was_vote_good = True
-			selected_choice.votes += 1
-			selected_choice.save()
-			return HttpResponseRedirect('/elections/vote_success/')
+            selected_choice.votes += 1
+            selected_choice.save()
+            return HttpResponseRedirect('/elections/vote_success/')
         except:
             was_vote_good = False
-			return HttpResponseRedirect('/elections/vote_fail/')
+            return HttpResponseRedirect('/elections/vote_fail/')
 
     # Always return an HttpResponseRedirect after successfully dealing
     # with POST data. This prevents data from being posted twice if a
