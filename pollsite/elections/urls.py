@@ -7,6 +7,8 @@ urlpatterns = [
     url(r'^logout/$', views.user_logout, name='logout'),
     url(r'^login/$', views.user_login, name='login'),
     url(r'^register/$', views.register, name='register'),
+	url(r'^vote_success/$', login_required(views.success), name='success'),
+	url(r'^vote_fail/$', login_required(views.fail), name='fail'),
     # ex: /elections/
     url(r'^$', login_required(views.index), name='index'),
     # ex: /elections/5/

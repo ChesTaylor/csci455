@@ -119,6 +119,11 @@ def detail(request, candidate_id):
     candidate = get_object_or_404(Candidate, pk=candidate_id)
     return render(request, 'elections/detail.html', {'candidate': candidate})
 
+def success(request):
+    return render(request, 'elections/success.html', {})
+	
+def fail(request):
+    return render(request, 'elections/fail.html', {})
 
 def results(request, candidate_id):
     # raise Exception(candidate_id)
@@ -140,8 +145,7 @@ def vote(request, candidate_id):
             'error_message': "You didn't select a choice.",
         })
     else:
-        selected_choice.votes += 1
-        selected_choice.save()
+        
         digital_asset_payload = {'choice': candidate_id}
         # user = get_object_or_404(UserProfile, user_id=request.user.user_id)
         # pdb.set_trace()
@@ -172,8 +176,12 @@ def vote(request, candidate_id):
         try:
             b.validate_transaction(tx_transfer_signed)
             was_vote_good = True
+			selected_choice.votes += 1
+			selected_choice.save()
+			return HttpResponseRedirect('/elections/vote_success/')
         except:
             was_vote_good = False
+			return HttpResponseRedirect('/elections/vote_fail/')
 
     # Always return an HttpResponseRedirect after successfully dealing
     # with POST data. This prevents data from being posted twice if a
