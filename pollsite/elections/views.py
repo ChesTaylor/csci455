@@ -119,7 +119,9 @@ def vote(request, candidate_id):
         selected_choice.votes += 1
         selected_choice.save()
         digital_asset_payload = {'choice': candidate_id}
-        prv, pub = request.user.prvkey, request.user.pubkey
+        user = get_object_or_404(UserProfileForm, pk=request.user.username)
+        #prv, pub = request.user.prvkey, request.user.pubkey
+        prv, pub = user.prvkey, user.pubkey
         tx = b.create_transaction(b.me, pub, None, 'CREATE', payload=digital_asset_payload)
         tx_signed = b.sign_transaction(tx, b.me_private)
         b.write_transaction(tx_signed)
